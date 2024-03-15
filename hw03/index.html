@@ -199,8 +199,85 @@
     <!-- ------------------------------------------------>
     <div class="row hw12">
       <div class="col-md-12 twenty">
-        心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105
-        字。心得報告 105 字。心得報告 105 字。
+        <p>
+          在轉換的過程中有發現一些檔案沒辦法辨識到 qrcode，不過我在網路上找到另一個可以校正傾斜的套件 <code>pip install jdeskew</code>
+        </p>
+        <pre>
+import os
+import cv2
+from tqdm import tqdm
+from natsort import ns, natsorted
+from jdeskew.estimator import get_angle
+from jdeskew.utility import rotate
+
+
+if __name__ == '__main__':
+    student_id = '109AB0032'
+
+    target_path = f'./{student_id}'  # !!! 目標資料夾 !!!
+    result_path = f'rotated_{student_id}'  # 存放資料夾
+    if not os.path.exists(result_path):
+        os.makedirs(result_path)
+
+    print(f"Handling page rotation, student id = {student_id}")
+
+    errorList = []
+    allFileList = os.listdir(target_path)
+    allFileList = natsorted(allFileList, alg=ns.PATH)
+    for index in tqdm(range(len(allFileList))):
+        filePath = target_path + "/" + allFileList[index]
+        image = cv2.imread(filePath)
+        angle = get_angle(image)
+        output_image = rotate(image, angle)
+        cv2.imwrite('./{}/{}.png'.format(result_path,
+                    f'{index+1}'), output_image)
+
+      </pre>
+        <p>
+          這麼短就可以完成校正傾斜的功能
+        </p>
+        <p>
+          另外在切割的過程中發現我有的字比較靠邊框，會被切掉，後來發現先用 opencv 把邊框塗白後，再進行切割就能解決這個問題，同時字體重新調整也會更加準確。
+        </p>
+        <pre>
+          # 我只修改了下面這部分的程式碼
+  # 略過小於閾值的方框
+            if w >= min_box_size and h >= min_box_size and abs(w-h) < 100:
+                img_np = cv2.rectangle(
+                    img_np, (x, y), (x+w, y+h), (255, 255, 255), 30)
+                # 裁切方框
+                # cropped_image = image.crop((x, y, x + w, y + h))
+                cropped_image = Image.fromarray(cv2.cvtColor(
+                    img_np[y:y+h, x:x+w], cv2.COLOR_BGR2RGB))
+                cropped_image = np.array(cropped_image)
+                cropped_image = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
+                median_filtered = cv2.medianBlur(cropped_image, 3)
+                kernel = np.ones((2, 2), np.uint8)
+                processed_image = cv2.morphologyEx(
+                    median_filtered, cv2.MORPH_OPEN, kernel)
+                connectivity, labels, stats, centroids = cv2.connectedComponentsWithStats(
+                    processed_image, connectivity=8)
+                for i in range(1, connectivity):
+                    area = stats[i, cv2.CC_STAT_AREA]
+                    if area < min_area_threshold:
+                        processed_image[labels == i] = 0
+
+                cropped_image = scale_adjustment(processed_image)
+                # print(f"Contour #{i}: Unicode expected: {unicode_list[k]}, Position: ({x}, {y})")
+                cv2.imwrite(os.path.join(output_directory,
+                            f'{unicode_list[k]}.png'), cropped_image)
+                k += 1
+                # 在OpenCV中繪製藍色的邊框
+                cv2.rectangle(img_np, (x, y), (x+w, y+h), (0, 255, 255), 30)
+
+                if k == unicode_num:
+                    break
+</pre>
+
+
+        <p>
+
+        </p>
       </div>
     </div>
 
@@ -216,33 +293,55 @@
           </tr>
           <tr>
             <td rowspan="7" id="myTotal"></td>
-            <td><input type="checkbox" class="flipswitch" id="myCheckbox1"></td>
-            <td id='m1'>2</td>
-            <td>Simple baseline - 描述、描述、描述</td>
+            <td><input type="checkbox" class="flipswitch" id="myCheckbox1" checked></td>
+            <td id='m1'>1</td>
+            <td>Simple baseline - 專案下載 </td>
           </tr>
           <tr>
             <td><input type="checkbox" class="flipswitch" id="myCheckbox2" checked></td>
-            <td id='m2'>6</td>
-            <td>Medium baseline - 描述、描述、描述 </td>
+            <td id='m2'>2</td>
+            <td>Simple baseline - 安裝虛擬環境 </td>
           </tr>
           <tr>
-            <td><input type="checkbox" class="flipswitch" id="myCheckbox3"></td>
-            <td id='m3'>2</td>
-            <td>Strong baseline - 描述、描述、描述 </td>
+            <td><input type="checkbox" class="flipswitch" id="myCheckbox3" checked></td>
+            <td id='m3'>3</td>
+            <td>Medium baseline - 旋轉校正手寫稿紙 </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="flipswitch" id="myCheckbox4" checked></td>
+            <td id='m4'>4</td>
+            <td>Strong baseline - 成功執行切割程式並取得檔案 </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="flipswitch" id="myCheckbox5" checked></td>
+            <td id='m5'>2</td>
+            <td>Strong baseline - 繳交頁面新增下載壓縮檔按鈕 </td>
           </tr>
         </table>
       </div>
     </div>
 
+
     <!-- ------------------------------------------------>
     <div class="row hw12">
       <div class="col-md-12 twenty">
-        <video id="video1" style="width:100%;max-width:100%;" controls="">
-          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-        </video>
+        壓縮檔位置連結：
+
+
+        <a href="https://github.com/gnehs/ct2024s/releases/download/HW02/rec_bound_v5_109AB0032_.E5.BB.96.E7.BE.A4.E5.8B.9D.zip"
+          download="rec_bound_v5_109AB0032_廖群勝.zip">rec_bound_v5_109AB0032_廖群勝.zip</a>
+        <a href="https://github.com/gnehs/ct2024s/releases/download/HW02/crop_v5_109AB0032_.E5.BB.96.E7.BE.A4.E5.8B.9D.zip"
+          download="crop_v5_109AB0032_廖群勝.zip">crop_v5_109AB0032_廖群勝.zip</a>
+        (p.s 請記得修改網址)
       </div>
     </div>
+    <div class="row hw12">
+      <div class="col-md-12 twenty">
+        <img src="./src/Simple/套件安裝.png" alt="套件安裝" style="width:100%" />
+        <img src="./src/Simple/專案下載.png" alt="專案下載" style="width:100%" />
 
+      </div>
+    </div>
     <!-- ------------------------------------------------>
 
     <!-- ------------------------------------------------>
@@ -282,8 +381,17 @@
           score += parseInt(d3.select('#m3').html());
         }
 
+        if (d3.select("#myCheckbox4").property("checked")) {
+          score += parseInt(d3.select('#m4').html());
+        }
+
+        if (d3.select("#myCheckbox5").property("checked")) {
+          score += parseInt(d3.select('#m5').html());
+        }
+
         d3.select("#myTotal").html(score);
       }
+
     </script>
 
 </body>
