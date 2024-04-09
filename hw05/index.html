@@ -207,8 +207,7 @@
     <!-- ------------------------------------------------>
     <div class="row hw12">
       <div class="col-md-12 twenty">
-        心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105 字。心得報告 105
-        字。心得報告 105 字。心得報告 105 字。
+        雖然完成了前幾步，但是基於 Tensorflow v1 的 zi2zi 到現在還是沒有辦法順利跑起來，不知道是顯卡太新還是程式碼太舊，或是兩者都有可能，我也嘗試過各種不同的 CUDA 版本，但都沒有辦法成功，所以這次作業我只能放上前兩步的結果。
       </div>
     </div>
 
@@ -224,19 +223,24 @@
           </tr>
           <tr>
             <td rowspan="7" id="myTotal"></td>
-            <td><input type="checkbox" class="flipswitch" id="myCheckbox1"></td>
+            <td><input type="checkbox" class="flipswitch" id="myCheckbox1" checked></td>
             <td id='m1'>2</td>
-            <td>Simple baseline - 描述、描述、描述</td>
+            <td>Simple baseline - 產生訓練樣本 (4808字/2) (放入image_train，壓縮檔上傳)</td>
           </tr>
           <tr>
             <td><input type="checkbox" class="flipswitch" id="myCheckbox2" checked></td>
-            <td id='m2'>6</td>
-            <td>Medium baseline - 描述、描述、描述 </td>
+            <td id='m2'>2</td>
+            <td>Simple baseline - 產生驗證樣本 (4808字/2) (放入image_val，壓縮檔上傳)</td>
           </tr>
           <tr>
             <td><input type="checkbox" class="flipswitch" id="myCheckbox3"></td>
-            <td id='m3'>2</td>
-            <td>Strong baseline - 描述、描述、描述 </td>
+            <td id='m3'>4</td>
+            <td>Medium baseline - 繳交字體的對比檔案 </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" class="flipswitch" id="myCheckbox4"></td>
+            <td id='m4'>2</td>
+            <td>Strong baseline - 最後生成結果 (於infer_1資料夾內)</td>
           </tr>
         </table>
       </div>
@@ -245,9 +249,9 @@
     <!-- ------------------------------------------------>
     <div class="row hw12">
       <div class="col-md-12 twenty">
-        <video id="video1" style="width:100%;max-width:100%;" controls="">
-          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-        </video>
+        <img src="train.png" width="600" height="600" alt="train" />
+        <img src="val.png" width="600" height="600" alt="val" />
+
       </div>
     </div>
 
